@@ -1,0 +1,68 @@
+Airflow
+
+
+##Docker command to create a container with specified image
+#############
+docker run -it -p 8080:8080 python:3.5-slim /bin/bash
+#############
+
+#Create user and set its home directory
+#############
+useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow
+#############
+
+
+#To install virtualenv and activate it use below commands
+#############
+pip install virtualenv  #install virtual env
+virtualenv sandbox  # create env called sandbox
+source sandbox/bin/activate #activate it
+#############
+
+#Downlad airflow requirement file from github
+#############
+wget https://raw.githubusercontent.com/apache/airflow/v1-10-stable/requirements/requirements-python3.5.txt
+#############
+
+
+#Install the version 1.10.10 of apache-airflow with all subpackages defined between square brackets
+#############
+pip install "apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh,docker,hdfs,kerberos,kubernetes,redis,rabbitmq,ldap,slack,webhdfs]"==1.10.10 --constraint /requirements-python3.5.txt
+#############
+
+#Initialize airflow db and scheduler & webserver - to view airflow ui type - localhost:8080
+#############
+airflow initdb
+airflow scheduler &> /dev/null &
+airflow webserver &> /dev/null &
+#############
+
+
+#Build docker image based on Dockerfile in this location
+#############
+docker build -t airflow-basic .
+#############
+
+#Run the docker image
+#############
+docker run -p 8080:8080 airflow-basic
+#############
+
+
+#To check if a docker image is running
+#############
+docker ps
+#############
+
+
+#To start shell session inside docker container
+#############
+docker exec -it <docker container id> /bin/bash
+#############
+
+
+#Airflow cli commands
+#############
+airflow list_dags  -- list all dags
+airflow trigger_dag <dag name>
+#############
